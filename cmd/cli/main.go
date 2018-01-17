@@ -29,6 +29,6 @@ func main() {
 		panic(tblErr)
 	}
 	for _, val := range tbls {
-		fmt.Println(val.Name)
+		fmt.Println(val.TableName, val.TableType)
 	}
 }

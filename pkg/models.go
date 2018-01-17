@@ -1,5 +1,7 @@
 package pkg
 
+import "database/sql"
+
 type DBInspector interface {
 	ListTables() ([]*DbiTables, error)
 }
@@ -14,5 +16,16 @@ type DBConfig struct {
 }
 
 type DbiTables struct {
-	Name string
+	TableCatalog              string
+	TableSchema               string
+	TableName                 string
+	TableType                 string
+	SelfReferencingColumnName sql.NullString
+	ReferenceGeneration       sql.NullString
+	UserDefinedTypeCatalog    sql.NullString
+	UserDefinedTypeSchema     sql.NullString
+	UserDefinedTypeName       sql.NullString
+	IsInsertableInto          string
+	IsTyped                   string
+	CommitAction              sql.NullString
 }

@@ -12,7 +12,7 @@ type PGDBInspector struct {
 
 func (pgDB PGDBInspector) ListTables() ([]*pkg.DbiTables, error) {
 	var res []*pkg.DbiTables
-	q, err := pgDB.DBConn.Query("SELECT table_name FROM information_schema.tables  where table_schema='public'")
+	q, err := pgDB.DBConn.Query("SELECT * FROM information_schema.tables  where table_schema='public'")
 
 	if err != nil {
 		return nil, err
@@ -25,7 +25,18 @@ func (pgDB PGDBInspector) ListTables() ([]*pkg.DbiTables, error) {
 		t := pkg.DbiTables{}
 
 		// scan
-		err = q.Scan(&t.Name)
+		err = q.Scan(&t.TableCatalog,
+			&t.TableSchema,
+			&t.TableName,
+			&t.TableType,
+			&t.SelfReferencingColumnName,
+			&t.ReferenceGeneration,
+			&t.UserDefinedTypeCatalog,
+			&t.UserDefinedTypeSchema,
+			&t.UserDefinedTypeName,
+			&t.IsInsertableInto,
+			&t.IsTyped,
+			&t.CommitAction)
 		if err != nil {
 			return nil, err
 		}
