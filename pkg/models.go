@@ -9,6 +9,10 @@ type DBInspector interface {
 	GetKeyUsageForTable(string) ([]*DbiKeyUsages, error)
 }
 
+type DBInspectorAPI interface {
+	GetDatabaseMetadata(DbConfig) ([]*Table, error)
+}
+
 type DBConfig struct {
 	DBName   string
 	SSLMode  bool
@@ -48,4 +52,15 @@ type DbiConstraints struct {
 type DbiKeyUsages struct {
 	ColumnName     string
 	ConstraintName string
+}
+
+type Column struct {
+	ColumnName     string
+	ConstraintType string
+	ConstraintName string
+}
+
+type Table struct {
+	TableName string
+	Columns   []*Column
 }
