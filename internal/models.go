@@ -9,7 +9,6 @@ type DBInspectorGranularInspector interface {
 	GetKeyUsageForTable(string) ([]*DbiKeyUsages, error)
 }
 
-
 type DbiTables struct {
 	TableCatalog              string
 	TableSchema               string

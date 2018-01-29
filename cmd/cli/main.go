@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 
 	"github.com/kaddiya/dbi/pkg"
 )
@@ -18,7 +19,7 @@ func main() {
 	flag.Parse()
 
 	inspector := &pkg.DBInspectorImpl{}
-	inspector.GetDatabaseMetadata(&pkg.DBConfig{
+	data, r := inspector.GetDatabaseMetadata(&pkg.DBConfig{
 		DBName:   *dbName,
 		SSLMode:  *sslMode,
 		UserName: *userName,
@@ -26,4 +27,14 @@ func main() {
 		Host:     *host,
 		Protocol: *protocol,
 	})
+
+	if r != nil {
+		fmt.Println(r.Error())
+	}
+	for _, tbls := range data {
+		fmt.Println(tbls.TableName)
+		for _, cols := range tbls.Columns {
+			fmt.Println(cols.ColumnName, cols.ConstraintName, cols.ConstraintType)
+		}
+	}
 }

@@ -20,6 +20,8 @@ func (dbinpsector *DBInspectorImpl) GetDatabaseMetadata(config *DBConfig) ([]*Ta
 	}
 
 	for _, val := range tbls {
+		t := &Table{}
+		t.TableName = val.TableName
 		var reflectionErr error
 		var colList []*internal.DbiColumns
 		var constraintsList []*internal.DbiConstraints
@@ -31,18 +33,26 @@ func (dbinpsector *DBInspectorImpl) GetDatabaseMetadata(config *DBConfig) ([]*Ta
 		if reflectionErr != nil {
 			fmt.Println("Could not get the column data for " + val.TableName + " due to " + reflectionErr.Error())
 		} else {
-			fmt.Println("*********************")
-			fmt.Println(val.TableName)
+
 			for _, cols := range colList {
-				fmt.Println(cols.ColumnName, cols.DataType)
-			}
-			for _, constraints := range constraintsList {
-				fmt.Println(constraints.ConstraintName, constraints.ConstraintType)
-			}
-			for _, keyUsages := range keyUsages {
-				fmt.Println(keyUsages.ColumnName, keyUsages.ConstraintName)
+				c := &Column{}
+
+				for _, keyUsages := range keyUsages {
+					if cols.ColumnName == keyUsages.ColumnName {
+						c.ColumnName = cols.ColumnName
+						for _, constraints := range constraintsList {
+							if constraints.ConstraintName == keyUsages.ConstraintName {
+								c.ConstraintName = constraints.ConstraintName
+								c.ConstraintType = constraints.ConstraintType
+							}
+						}
+					}
+
+				}
+				t.Columns = append(t.Columns, c)
 			}
 		}
+		result = append(result, t)
 	}
 	return result, nil
 }
