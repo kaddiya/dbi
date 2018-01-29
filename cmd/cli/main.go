@@ -13,7 +13,7 @@ func main() {
 	userName := flag.String("u", "local", "user name")
 	password := flag.String("p", "local", "password")
 	host := flag.String("h", "localhost", "host url")
-	dbName := flag.String("d", "todo", "database name")
+	dbName := flag.String("d", "local", "database name")
 	sslMode := flag.String("s", "disable", "sslMode")
 
 	flag.Parse()
@@ -32,9 +32,12 @@ func main() {
 		fmt.Println(r.Error())
 	}
 	for _, tbls := range data {
+		fmt.Println("***************")
 		fmt.Println(tbls.TableName)
+		fmt.Println(len(tbls.Columns))
 		for _, cols := range tbls.Columns {
 			fmt.Println(cols.ColumnName, cols.ConstraintName, cols.ConstraintType)
 		}
+		fmt.Println("-----------------")
 	}
 }
