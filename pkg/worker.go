@@ -36,6 +36,8 @@ func (dbinpsector *DBInspectorImpl) GetDatabaseMetadata(config *DBConfig) ([]*Ta
 			for _, cols := range colList {
 				c := &Column{}
 				c.ColumnName = cols.ColumnName
+				c.ColumnNullability = cols.Nullable
+				c.ColumnDataType = cols.DataType
 				for _, keyUsages := range keyUsages {
 					if c.ColumnName == keyUsages.ColumnName {
 						for _, constraints := range constraintsList {

@@ -17,9 +17,11 @@ type DBConfig struct {
 }
 
 type Column struct {
-	ColumnName     string
-	ConstraintType string
-	ConstraintName string
+	ColumnName        string
+	ConstraintType    string
+	ConstraintName    string
+	ColumnDataType    string
+	ColumnNullability string
 }
 
 type Table struct {
