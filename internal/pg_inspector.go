@@ -3,7 +3,6 @@ package internal
 import (
 	"database/sql"
 
-	"github.com/kaddiya/dbi/pkg"
 	_ "github.com/lib/pq"
 )
 
@@ -11,8 +10,8 @@ type PGDBInspector struct {
 	DBConn *sql.DB
 }
 
-func (pgDB PGDBInspector) GetTables() ([]*pkg.DbiTables, error) {
-	var res []*pkg.DbiTables
+func (pgDB PGDBInspector) GetTables() ([]*DbiTables, error) {
+	var res []*DbiTables
 	q, err := pgDB.DBConn.Query("SELECT * FROM information_schema.tables  where table_schema='public'")
 
 	if err != nil {
@@ -23,7 +22,7 @@ func (pgDB PGDBInspector) GetTables() ([]*pkg.DbiTables, error) {
 	// load results
 
 	for q.Next() {
-		t := pkg.DbiTables{}
+		t := DbiTables{}
 
 		// scan
 		err = q.Scan(&t.TableCatalog,
@@ -48,8 +47,8 @@ func (pgDB PGDBInspector) GetTables() ([]*pkg.DbiTables, error) {
 	return res, nil
 }
 
-func (pgDB PGDBInspector) GetColumnsForTable(tableName string) ([]*pkg.DbiColumns, error) {
-	var res []*pkg.DbiColumns
+func (pgDB PGDBInspector) GetColumnsForTable(tableName string) ([]*DbiColumns, error) {
+	var res []*DbiColumns
 
 	q, err := pgDB.DBConn.Query("SELECT is_nullable,data_type,column_name FROM information_schema.columns where table_name=$1", tableName)
 
@@ -61,7 +60,7 @@ func (pgDB PGDBInspector) GetColumnsForTable(tableName string) ([]*pkg.DbiColumn
 	// load results
 
 	for q.Next() {
-		t := pkg.DbiColumns{}
+		t := DbiColumns{}
 
 		// scan
 		err = q.Scan(&t.Nullable,
@@ -77,9 +76,9 @@ func (pgDB PGDBInspector) GetColumnsForTable(tableName string) ([]*pkg.DbiColumn
 	return res, nil
 }
 
-func (pgDB PGDBInspector) GetConstraintsForTable(tableName string) ([]*pkg.DbiConstraints, error) {
+func (pgDB PGDBInspector) GetConstraintsForTable(tableName string) ([]*DbiConstraints, error) {
 
-	var res []*pkg.DbiConstraints
+	var res []*DbiConstraints
 
 	q, err := pgDB.DBConn.Query("SELECT constraint_name,constraint_type from information_schema.table_constraints where table_name=$1", tableName)
 
@@ -91,7 +90,7 @@ func (pgDB PGDBInspector) GetConstraintsForTable(tableName string) ([]*pkg.DbiCo
 	// load results
 
 	for q.Next() {
-		t := pkg.DbiConstraints{}
+		t := DbiConstraints{}
 
 		// scan
 		err = q.Scan(&t.ConstraintName,
@@ -106,9 +105,9 @@ func (pgDB PGDBInspector) GetConstraintsForTable(tableName string) ([]*pkg.DbiCo
 	return res, nil
 }
 
-func (pgDB PGDBInspector) GetKeyUsageForTable(tableName string) ([]*pkg.DbiKeyUsages, error) {
+func (pgDB PGDBInspector) GetKeyUsageForTable(tableName string) ([]*DbiKeyUsages, error) {
 
-	var res []*pkg.DbiKeyUsages
+	var res []*DbiKeyUsages
 
 	q, err := pgDB.DBConn.Query("select column_name,constraint_name from information_schema.key_column_usage where table_name=$1", tableName)
 
@@ -120,7 +119,7 @@ func (pgDB PGDBInspector) GetKeyUsageForTable(tableName string) ([]*pkg.DbiKeyUs
 	// load results
 
 	for q.Next() {
-		t := pkg.DbiKeyUsages{}
+		t := DbiKeyUsages{}
 
 		// scan
 		err = q.Scan(&t.ColumnName,
