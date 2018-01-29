@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/kaddiya/dbi/internal"
+	"github.com/kaddiya/dbi/pkg"
 )
 
 func main() {
@@ -28,15 +29,29 @@ func main() {
 	if tblErr != nil {
 		panic(tblErr)
 	}
+
 	for _, val := range tbls {
-		res, colErr := inspector.GetColumnsForTable(val.TableName)
-		if colErr != nil {
-			fmt.Println("Could not get the column data for " + val.TableName + " due to " + colErr.Error())
+		var reflectionErr error
+		var colList []*pkg.DbiColumns
+		var constraintsList []*pkg.DbiConstraints
+		var keyUsages []*pkg.DbiKeyUsages
+
+		colList, reflectionErr = inspector.GetColumnsForTable(val.TableName)
+		constraintsList, reflectionErr = inspector.GetConstraintsForTable(val.TableName)
+		keyUsages, reflectionErr = inspector.GetKeyUsageForTable(val.TableName)
+		if reflectionErr != nil {
+			fmt.Println("Could not get the column data for " + val.TableName + " due to " + reflectionErr.Error())
 		} else {
 			fmt.Println("*********************")
 			fmt.Println(val.TableName)
-			for _, cols := range res {
+			for _, cols := range colList {
 				fmt.Println(cols.ColumnName, cols.DataType)
+			}
+			for _, constraints := range constraintsList {
+				fmt.Println(constraints.ConstraintName, constraints.ConstraintType)
+			}
+			for _, keyUsages := range keyUsages {
+				fmt.Println(keyUsages.ColumnName, keyUsages.ConstraintName)
 			}
 		}
 

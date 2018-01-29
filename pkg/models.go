@@ -5,6 +5,8 @@ import "database/sql"
 type DBInspector interface {
 	GetTables() ([]*DbiTables, error)
 	GetColumnsForTable(string) ([]*DbiColumns, error)
+	GetConstraintsForTable(string) ([]*DbiConstraints, error)
+	GetKeyUsageForTable(string) ([]*DbiKeyUsages, error)
 }
 
 type DBConfig struct {
@@ -36,4 +38,14 @@ type DbiColumns struct {
 	DataType      string
 	ColumnDefault string
 	ColumnName    string
+}
+
+type DbiConstraints struct {
+	ConstraintName string
+	ConstraintType string
+}
+
+type DbiKeyUsages struct {
+	ColumnName     string
+	ConstraintName string
 }

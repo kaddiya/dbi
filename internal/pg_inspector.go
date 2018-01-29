@@ -76,3 +76,61 @@ func (pgDB PGDBInspector) GetColumnsForTable(tableName string) ([]*pkg.DbiColumn
 	}
 	return res, nil
 }
+
+func (pgDB PGDBInspector) GetConstraintsForTable(tableName string) ([]*pkg.DbiConstraints, error) {
+
+	var res []*pkg.DbiConstraints
+
+	q, err := pgDB.DBConn.Query("SELECT constraint_name,constraint_type from information_schema.table_constraints where table_name=$1", tableName)
+
+	if err != nil {
+		return nil, err
+	}
+	defer q.Close()
+
+	// load results
+
+	for q.Next() {
+		t := pkg.DbiConstraints{}
+
+		// scan
+		err = q.Scan(&t.ConstraintName,
+			&t.ConstraintType,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		res = append(res, &t)
+	}
+	return res, nil
+}
+
+func (pgDB PGDBInspector) GetKeyUsageForTable(tableName string) ([]*pkg.DbiKeyUsages, error) {
+
+	var res []*pkg.DbiKeyUsages
+
+	q, err := pgDB.DBConn.Query("select column_name,constraint_name from information_schema.key_column_usage where table_name=$1", tableName)
+
+	if err != nil {
+		return nil, err
+	}
+	defer q.Close()
+
+	// load results
+
+	for q.Next() {
+		t := pkg.DbiKeyUsages{}
+
+		// scan
+		err = q.Scan(&t.ColumnName,
+			&t.ConstraintName,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		res = append(res, &t)
+	}
+	return res, nil
+}
