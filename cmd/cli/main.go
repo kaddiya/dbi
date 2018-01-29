@@ -34,7 +34,6 @@ func main() {
 	for _, tbls := range data {
 		fmt.Println("***************")
 		fmt.Println(tbls.TableName)
-		fmt.Println(len(tbls.Columns))
 		for _, cols := range tbls.Columns {
 			fmt.Println(cols.ColumnName, cols.ConstraintName, cols.ConstraintType)
 		}

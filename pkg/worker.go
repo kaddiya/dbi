@@ -33,13 +33,11 @@ func (dbinpsector *DBInspectorImpl) GetDatabaseMetadata(config *DBConfig) ([]*Ta
 		if reflectionErr != nil {
 			fmt.Println("Could not get the column data for " + val.TableName + " due to " + reflectionErr.Error())
 		} else {
-
 			for _, cols := range colList {
 				c := &Column{}
-
+				c.ColumnName = cols.ColumnName
 				for _, keyUsages := range keyUsages {
-					if cols.ColumnName == keyUsages.ColumnName {
-						c.ColumnName = cols.ColumnName
+					if c.ColumnName == keyUsages.ColumnName {
 						for _, constraints := range constraintsList {
 							if constraints.ConstraintName == keyUsages.ConstraintName {
 								c.ConstraintName = constraints.ConstraintName
