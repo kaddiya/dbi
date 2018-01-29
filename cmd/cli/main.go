@@ -24,11 +24,21 @@ func main() {
 	if cfgErr != nil {
 		panic(cfgErr)
 	}
-	tbls, tblErr := inspector.ListTables()
+	tbls, tblErr := inspector.GetTables()
 	if tblErr != nil {
 		panic(tblErr)
 	}
 	for _, val := range tbls {
-		fmt.Println(val.TableName, val.TableType)
+		res, colErr := inspector.GetColumnsForTable(val.TableName)
+		if colErr != nil {
+			fmt.Println("Could not get the column data for " + val.TableName + " due to " + colErr.Error())
+		} else {
+			fmt.Println("*********************")
+			fmt.Println(val.TableName)
+			for _, cols := range res {
+				fmt.Println(cols.ColumnName, cols.DataType)
+			}
+		}
+
 	}
 }

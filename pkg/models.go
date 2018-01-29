@@ -3,7 +3,8 @@ package pkg
 import "database/sql"
 
 type DBInspector interface {
-	ListTables() ([]*DbiTables, error)
+	GetTables() ([]*DbiTables, error)
+	GetColumnsForTable(string) ([]*DbiColumns, error)
 }
 
 type DBConfig struct {
@@ -28,4 +29,11 @@ type DbiTables struct {
 	IsInsertableInto          string
 	IsTyped                   string
 	CommitAction              sql.NullString
+}
+
+type DbiColumns struct {
+	Nullable      string
+	DataType      string
+	ColumnDefault string
+	ColumnName    string
 }
